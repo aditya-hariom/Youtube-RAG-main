@@ -1,0 +1,22 @@
+[project]
+name = "youtube-rag-main"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "chromadb>=1.5.9",
+    "cohere>=7.1.1",
+    "fastapi>=0.141.1",
+    "google-genai>=2.20.0",
+    "langchain-text-splitters>=0.0.1",
+    "openai-whisper>=20250625",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.2.3",
+    "sentence-transformers>=6.0.0",
+    "streamlit>=1.40.0",
+    "torchvision>=0.28.0",
+    "uvicorn>=0.52.4",
+    "youtube-transcript-api>=1.2.4",
+    "yt-dlp>=2026.8.19",
+]

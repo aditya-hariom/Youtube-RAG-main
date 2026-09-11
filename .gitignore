@@ -1,0 +1,28 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Generated data
+data/cache/
+data/audio.mp3
+data/chroma_db/
+data/embeddings.npy
+*.mp3
+*.wav
+*.mp4
+
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

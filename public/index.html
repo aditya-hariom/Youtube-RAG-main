@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>YouTube RAG Agent</title>
+
+  <script>
+    (function() {
+      try {
+        var saved = localStorage.getItem("yt_rag_theme");
+        var theme = (saved === "dark") ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch(e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="/css/style.css?v=32" />
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- TOP NAVIGATION -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="youtube-mark"></div>
+        <div class="brand-name">YouTube <span>RAG</span> Agent</div>
+      </div>
+
+      <div class="url-input-container">
+        <input type="text" id="videoUrlInput" placeholder="Paste YouTube URL..." />
+        <button id="processVideoBtn">Process</button>
+      </div>
+
+      <div class="top-actions">
+        <button class="new-chat-btn" id="newChatBtn">＋ New Chat</button>
+        <button class="icon-btn theme-toggle-btn" id="themeBtn" title="Switch to Obsidian Dark theme" aria-label="Toggle theme">
+          <span class="theme-icon" id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="workspace">
+
+      <!-- LEFT: VIDEO -->
+      <section class="left-column">
+
+        <div class="video-card">
+
+          <div class="video-wrap">
+            <div class="rag-badge">
+              <span></span>
+              RAG Online
+            </div>
+
+            <iframe id="youtubePlayer" src="" title="YouTube Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <div class="video-heading">
+            <div>
+              <h1 class="video-title">No Video Loaded</h1>
+
+              <div class="channel-row">
+                <div class="channel-avatar" id="channelAvatar" aria-label="Channel logo">YT</div>
+
+                <div>
+                  <div class="channel-name" id="channelName">Unknown Channel</div>
+                  <div class="channel-meta" id="channelSubscribers">YouTube</div>
+                </div>
+
+                <button class="subscribe" id="subscribeBtn">Subscribe</button>
+              </div>
+            </div>
+
+            <div class="video-actions">
+              <button class="video-action" onclick="showToast('Liked')">♡ 2K</button>
+              <button class="video-action" onclick="showToast('Share link copied')">↗ Share</button>
+              <button class="video-action" onclick="showToast('More options')">•••</button>
+            </div>
+          </div>
+
+          <!-- VIDEO CHAPTERS & OUTLINE -->
+          <div class="chapters-card" id="videoChaptersCard">
+            <div class="chapters-header">
+              <h3>
+                <span class="info-icon">▤</span>
+                Video Chapters & Outline
+              </h3>
+              <span class="chapters-count" id="chaptersCount">0 chapters</span>
+            </div>
+
+            <div id="videoChaptersList" class="chapters-container">
+              <p class="empty-hint">Process a video to view interactive chapters and jump to any topic.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: AI CHAT -->
+      <section class="right-column">
+
+        <header class="chat-head">
+          <div class="assistant-identity">
+            <div class="assistant-icon">✦</div>
+            <div>
+              <div class="chat-title">YouTube RAG Assistant</div>
+              <div class="chat-subtitle">Answers grounded in the indexed video transcript</div>
+            </div>
+          </div>
+
+          <div class="chat-status">Online</div>
+        </header>
+
+        <div class="messages" id="messages">
+          <div class="message assistant">
+            <div class="assistant-row">
+              <div class="mini-ai">✦</div>
+              <div class="assistant-card">
+                <div class="assistant-label">YouTube RAG Assistant</div>
+                <div class="assistant-markdown">
+                  <p>Welcome! Please paste a YouTube URL above and click <strong>Process</strong> to begin.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAT FOOTER (FIXED COMPOSER) -->
+        <footer class="chat-footer">
+          <!-- COMPOSER -->
+          <div class="composer">
+            <!-- QUICK PROMPT SUGGESTIONS -->
+            <div class="composer-suggestions" id="composerSuggestions">
+              <button class="suggestion-chip" type="button" onclick="setPrompt('Summarize this video in detail with key timestamps')">
+                <span class="chip-icon">✨</span> Summarize Video
+              </button>
+              <button class="suggestion-chip" type="button" onclick="setPrompt('What are the key takeaways and main concepts?')">
+                <span class="chip-icon">💡</span> Key Takeaways
+              </button>
+              <button class="suggestion-chip" type="button" onclick="setPrompt('Give me a step-by-step breakdown of this video')">
+                <span class="chip-icon">📋</span> Step-by-Step
+              </button>
+              <button class="suggestion-chip" type="button" onclick="setPrompt('What code snippets or tools were shown in this video?')">
+                <span class="chip-icon">💻</span> Code & Tools
+              </button>
+            </div>
+
+            <div class="input-wrap" id="inputWrap">
+              <div class="input-prefix" title="Ask AI">
+                <span class="sparkle-dot">✦</span>
+              </div>
+
+              <textarea
+                class="textarea"
+                id="question"
+                rows="1"
+                placeholder="Ask anything about this video... (or press Enter)"></textarea>
+
+              <button class="send-btn" id="sendButton" onclick="sendQuestion()" title="Send question (Enter)" aria-label="Send question">
+                <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
+
+            
+
+          
+        </footer>
+
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/js/script.js?v=30"></script>
+</body>
+
+</html>

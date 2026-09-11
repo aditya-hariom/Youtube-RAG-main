@@ -1,7 +1,7 @@
 [project]
 name = "youtube-rag-main"
 version = "0.1.0"
-description = "Add your description here"
+description = "Enterprise-grade YouTube RAG assistant powered by FastAPI and Google Gemini"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -14,8 +14,6 @@ dependencies = [
     "pydantic>=2.0.0",
     "python-dotenv>=1.2.3",
     "sentence-transformers>=6.0.0",
-    "streamlit>=1.40.0",
-    "torchvision>=0.28.0",
     "uvicorn>=0.52.4",
     "youtube-transcript-api>=1.2.4",
     "yt-dlp>=2026.8.19",

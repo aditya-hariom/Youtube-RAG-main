@@ -8,6 +8,5 @@ langchain-text-splitters>=0.0.1
 youtube-transcript-api>=1.2.4
 yt-dlp>=2026.8.19
 openai-whisper>=20250625
-torchvision>=0.28.0
 python-dotenv>=1.2.3
 pydantic>=2.0.0

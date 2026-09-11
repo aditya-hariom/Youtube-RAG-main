@@ -59,16 +59,16 @@ function applyVideoData(data) {
       chapters.forEach((ch) => {
         const chBtn = document.createElement("button");
         chBtn.type = "button";
-        chBtn.className = "chapter-pill";
+        chBtn.className = "chapter-pill inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700/80 hover:border-blue-300 dark:hover:border-blue-700 active:scale-95 transition cursor-pointer";
         const mins = Math.floor(ch.start_time / 60);
         const secs = Math.floor(ch.start_time % 60);
         const timeStr = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-        chBtn.innerHTML = `<span class="chapter-time">▶ ${timeStr}</span> <span class="chapter-title">${ch.title}</span>`;
+        chBtn.innerHTML = `<span class="font-mono text-blue-600 dark:text-blue-400 font-semibold">▶ ${timeStr}</span> <span class="truncate max-w-[200px]">${ch.title}</span>`;
         chBtn.onclick = () => seekVideo(ch.start_time);
         chaptersContainer.appendChild(chBtn);
       });
     } else {
-      chaptersContainer.innerHTML = `<p class="empty-hint">No explicit chapters found for this video. You can still ask questions and navigate using cited timestamps in chat answers.</p>`;
+      chaptersContainer.innerHTML = `<p class="empty-hint text-xs text-slate-400 dark:text-slate-500 italic py-1">No explicit chapters found for this video. You can still ask questions and navigate using cited timestamps in chat answers.</p>`;
     }
   }
 
@@ -119,17 +119,19 @@ processVideoBtn.addEventListener("click", async () => {
 
     // Clear chat
     messages.innerHTML = `
-        <div class="message assistant">
-          <div class="assistant-row">
-            <div class="mini-ai">✦</div>
-            <div class="assistant-card">
-              <div class="assistant-label">YouTube RAG Assistant</div>
-              <div class="assistant-markdown">
-                <p>Successfully indexed <strong>${data.title}</strong>! You can now ask questions about the video content.</p>
-              </div>
-            </div>
+      <div class="flex items-start gap-3">
+        <div class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 border border-blue-200/60 dark:border-blue-900/60">
+          ✦
+        </div>
+        <div class="flex-1 bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl rounded-tl-sm p-4 shadow-xs">
+          <div class="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 tracking-wide">
+            YouTube RAG Assistant
+          </div>
+          <div class="assistant-markdown text-sm">
+            <p>Successfully indexed <strong>${data.title}</strong>! You can now ask questions about the video content.</p>
           </div>
         </div>
+      </div>
     `;
   } catch (err) {
     showToast(err.message);
@@ -305,14 +307,14 @@ function showToast(text) {
 
 function addUserMessage(text) {
   const message = document.createElement("div");
-  message.className = "message user";
+  message.className = "message user flex flex-col items-end gap-1";
 
   const bubble = document.createElement("div");
-  bubble.className = "user-bubble";
+  bubble.className = "user-bubble max-w-[85%] bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl rounded-tr-xs px-4 py-2.5 text-sm shadow-xs leading-relaxed break-words";
   bubble.textContent = text;
 
   const meta = document.createElement("div");
-  meta.className = "user-meta";
+  meta.className = "user-meta text-[10px] text-slate-400 dark:text-slate-500 pr-1 flex items-center gap-1 font-medium";
   meta.textContent = "Just now ✓✓";
 
   message.appendChild(bubble);
@@ -328,34 +330,29 @@ function addUserMessage(text) {
 
 function addAssistantMessage() {
   const message = document.createElement("div");
-  message.className = "message assistant";
-
-  const row = document.createElement("div");
-  row.className = "assistant-row";
+  message.className = "message assistant flex items-start gap-3";
 
   const icon = document.createElement("div");
-  icon.className = "mini-ai";
+  icon.className = "mini-ai w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 border border-blue-200/60 dark:border-blue-900/60";
   icon.textContent = "✦";
 
   const card = document.createElement("div");
-  card.className = "assistant-card";
+  card.className = "assistant-card flex-1 bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl rounded-tl-sm p-4 shadow-xs";
 
   const label = document.createElement("div");
-  label.className = "assistant-label";
+  label.className = "assistant-label text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 tracking-wide";
   label.textContent = "YouTube RAG Assistant";
 
   const bubble = document.createElement("div");
-  bubble.className = "assistant-markdown";
-
-  row.appendChild(icon);
-  row.appendChild(card);
+  bubble.className = "assistant-markdown text-sm";
 
   card.appendChild(label);
   card.appendChild(bubble);
 
-  message.appendChild(row);
-  messages.appendChild(message);
+  message.appendChild(icon);
+  message.appendChild(card);
 
+  messages.appendChild(message);
   messages.scrollTop = messages.scrollHeight;
 
   return bubble;
@@ -648,16 +645,18 @@ questionInput.addEventListener("input", function () {
 newChatBtn.addEventListener("click", () => {
   CHAT_HISTORY = [];
   messages.innerHTML = `
-    <div class="message assistant">
-      <div class="assistant-row">
-        <div class="mini-ai">✦</div>
-        <div class="assistant-card">
-          <div class="assistant-label">YouTube RAG Assistant</div>
-          <div class="assistant-markdown">
-            <p>
-              New chat started. Ask me anything about the processed video.
-            </p>
-          </div>
+    <div class="flex items-start gap-3">
+      <div class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 border border-blue-200/60 dark:border-blue-900/60">
+        ✦
+      </div>
+      <div class="flex-1 bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl rounded-tl-sm p-4 shadow-xs">
+        <div class="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 tracking-wide">
+          YouTube RAG Assistant
+        </div>
+        <div class="assistant-markdown text-sm">
+          <p>
+            New chat started. Ask me anything about the processed video.
+          </p>
         </div>
       </div>
     </div>

@@ -22,177 +22,277 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
 
-  <link rel="stylesheet" href="/css/style.css?v=32" />
+  <link rel="stylesheet" href="/css/style.css?v=40" />
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 </head>
 
-<body>
-  <div class="app-shell">
-
-    <!-- TOP NAVIGATION -->
-    <header class="topbar">
-      <div class="brand">
-        <div class="youtube-mark"></div>
-        <div class="brand-name">YouTube <span>RAG</span> Agent</div>
+<body class="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col antialiased selection:bg-blue-500 selection:text-white transition-colors duration-200">
+  
+  <!-- TOPBAR -->
+  <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md px-4 sm:px-6 py-3 flex items-center justify-between gap-3 shadow-xs">
+    
+    <!-- BRAND -->
+    <div class="flex items-center gap-2.5 shrink-0 cursor-pointer">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center text-white shadow-sm shadow-red-500/20">
+        <svg class="w-4 h-4 fill-current ml-0.5" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z" />
+        </svg>
       </div>
-
-      <div class="url-input-container">
-        <input type="text" id="videoUrlInput" placeholder="Paste YouTube URL..." />
-        <button id="processVideoBtn">Process</button>
+      <div class="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+        YouTube <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">RAG</span> Agent
       </div>
+    </div>
 
-      <div class="top-actions">
-        <button class="new-chat-btn" id="newChatBtn">＋ New Chat</button>
-        <button class="icon-btn theme-toggle-btn" id="themeBtn" title="Switch to Obsidian Dark theme" aria-label="Toggle theme">
-          <span class="theme-icon" id="themeIcon">🌙</span>
-        </button>
-      </div>
-    </header>
+    <!-- URL INPUT -->
+    <div class="flex-1 max-w-xl mx-2 sm:mx-4 relative flex items-center">
+      <input
+        type="text"
+        id="videoUrlInput"
+        placeholder="Paste YouTube video URL here..."
+        class="w-full pl-4 pr-24 py-2 text-sm rounded-full border border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-950/70 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-xs"
+      />
+      <button
+        id="processVideoBtn"
+        class="absolute right-1 px-4 py-1.5 text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-full shadow-xs active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+        Process
+      </button>
+    </div>
 
-    <main class="workspace">
+    <!-- TOP ACTIONS -->
+    <div class="flex items-center gap-2 shrink-0">
+      <button
+        id="newChatBtn"
+        class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg transition-all active:scale-95 shadow-xs cursor-pointer">
+        <span>＋</span> New Chat
+      </button>
 
-      <!-- LEFT: VIDEO -->
-      <section class="left-column">
+      <button
+        id="themeBtn"
+        class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all active:scale-95 cursor-pointer shadow-xs"
+        title="Toggle dark/light theme"
+        aria-label="Toggle theme">
+        <span id="themeIcon" class="text-base leading-none select-none">🌙</span>
+      </button>
+    </div>
+  </header>
 
-        <div class="video-card">
+  <!-- WORKSPACE -->
+  <main class="flex-1 w-full max-w-7xl mx-auto p-3 sm:p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-start">
 
-          <div class="video-wrap">
-            <div class="rag-badge">
-              <span></span>
-              RAG Online
-            </div>
+    <!-- LEFT COLUMN: VIDEO & CHAPTERS -->
+    <section class="lg:col-span-6 xl:col-span-5 flex flex-col gap-4">
 
-            <iframe id="youtubePlayer" src="" title="YouTube Video"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen>
-            </iframe>
+      <!-- VIDEO CARD -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 rounded-2xl p-4 shadow-sm overflow-hidden flex flex-col gap-3.5">
+        
+        <!-- VIDEO WRAPPER -->
+        <div class="video-wrap relative aspect-video w-full rounded-xl overflow-hidden bg-slate-950 shadow-inner flex items-center justify-center">
+          <div class="absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-slate-900/80 backdrop-blur-md text-emerald-400 border border-emerald-500/30 shadow-md select-none">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            RAG Online
           </div>
 
-          <div class="video-heading">
-            <div>
-              <h1 class="video-title">No Video Loaded</h1>
+          <iframe
+            id="youtubePlayer"
+            src=""
+            title="YouTube Video"
+            class="w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
 
-              <div class="channel-row">
-                <div class="channel-avatar" id="channelAvatar" aria-label="Channel logo">YT</div>
+        <!-- VIDEO DETAILS & ACTIONS -->
+        <div class="flex flex-col gap-3">
+          <div>
+            <h1 class="video-title text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">
+              No Video Loaded
+            </h1>
 
-                <div>
-                  <div class="channel-name" id="channelName">Unknown Channel</div>
-                  <div class="channel-meta" id="channelSubscribers">YouTube</div>
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 mt-3 border-t border-slate-100 dark:border-slate-800/80">
+              <div class="flex items-center gap-2.5">
+                <div
+                  id="channelAvatar"
+                  class="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-rose-600 text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0"
+                  aria-label="Channel logo">
+                  YT
                 </div>
 
-                <button class="subscribe" id="subscribeBtn">Subscribe</button>
+                <div class="flex flex-col">
+                  <div id="channelName" class="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-200 leading-tight">
+                    Unknown Channel
+                  </div>
+                  <div id="channelSubscribers" class="text-[11px] text-slate-500 dark:text-slate-400">
+                    YouTube
+                  </div>
+                </div>
+
+                <button
+                  id="subscribeBtn"
+                  class="ml-1 px-3 py-1 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-semibold hover:opacity-90 active:scale-95 transition cursor-pointer">
+                  Subscribe
+                </button>
               </div>
-            </div>
 
-            <div class="video-actions">
-              <button class="video-action" onclick="showToast('Liked')">♡ 2K</button>
-              <button class="video-action" onclick="showToast('Share link copied')">↗ Share</button>
-              <button class="video-action" onclick="showToast('More options')">•••</button>
-            </div>
-          </div>
-
-          <!-- VIDEO CHAPTERS & OUTLINE -->
-          <div class="chapters-card" id="videoChaptersCard">
-            <div class="chapters-header">
-              <h3>
-                <span class="info-icon">▤</span>
-                Video Chapters & Outline
-              </h3>
-              <span class="chapters-count" id="chaptersCount">0 chapters</span>
-            </div>
-
-            <div id="videoChaptersList" class="chapters-container">
-              <p class="empty-hint">Process a video to view interactive chapters and jump to any topic.</p>
+              <div class="flex items-center gap-1.5">
+                <button
+                  class="px-2.5 py-1 text-xs font-medium rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition active:scale-95 cursor-pointer"
+                  onclick="showToast('Liked')">
+                  ♡ 2K
+                </button>
+                <button
+                  class="px-2.5 py-1 text-xs font-medium rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition active:scale-95 cursor-pointer"
+                  onclick="showToast('Share link copied')">
+                  ↗ Share
+                </button>
+                <button
+                  class="px-2.5 py-1 text-xs font-medium rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition active:scale-95 cursor-pointer"
+                  onclick="showToast('More options')">
+                  •••
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- RIGHT: AI CHAT -->
-      <section class="right-column">
-
-        <header class="chat-head">
-          <div class="assistant-identity">
-            <div class="assistant-icon">✦</div>
-            <div>
-              <div class="chat-title">YouTube RAG Assistant</div>
-              <div class="chat-subtitle">Answers grounded in the indexed video transcript</div>
-            </div>
+        <!-- VIDEO CHAPTERS & OUTLINE -->
+        <div id="videoChaptersCard" class="border-t border-slate-100 dark:border-slate-800/80 pt-3 flex flex-col gap-2.5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+              <span>▤</span> Video Chapters & Outline
+            </h3>
+            <span
+              id="chaptersCount"
+              class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+              0 chapters
+            </span>
           </div>
 
-          <div class="chat-status">Online</div>
-        </header>
+          <div
+            id="videoChaptersList"
+            class="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto pr-1">
+            <p class="empty-hint text-xs text-slate-400 dark:text-slate-500 italic py-1">
+              Process a video to view interactive chapters and jump to any topic.
+            </p>
+          </div>
+        </div>
 
-        <div class="messages" id="messages">
-          <div class="message assistant">
-            <div class="assistant-row">
-              <div class="mini-ai">✦</div>
-              <div class="assistant-card">
-                <div class="assistant-label">YouTube RAG Assistant</div>
-                <div class="assistant-markdown">
-                  <p>Welcome! Please paste a YouTube URL above and click <strong>Process</strong> to begin.</p>
-                </div>
-              </div>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN: AI CHAT -->
+    <section class="lg:col-span-6 xl:col-span-7 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 rounded-2xl shadow-sm flex flex-col h-[calc(100vh-6rem)] min-h-[550px] overflow-hidden">
+      
+      <!-- CHAT HEADER -->
+      <header class="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+            ✦
+          </div>
+          <div>
+            <div class="font-bold text-sm text-slate-900 dark:text-slate-100">
+              YouTube RAG Assistant
+            </div>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400">
+              Answers grounded in the indexed video transcript
             </div>
           </div>
         </div>
 
-        <!-- CHAT FOOTER (FIXED COMPOSER) -->
-        <footer class="chat-footer">
-          <!-- COMPOSER -->
-          <div class="composer">
-            <!-- QUICK PROMPT SUGGESTIONS -->
-            <div class="composer-suggestions" id="composerSuggestions">
-              <button class="suggestion-chip" type="button" onclick="setPrompt('Summarize this video in detail with key timestamps')">
-                <span class="chip-icon">✨</span> Summarize Video
-              </button>
-              <button class="suggestion-chip" type="button" onclick="setPrompt('What are the key takeaways and main concepts?')">
-                <span class="chip-icon">💡</span> Key Takeaways
-              </button>
-              <button class="suggestion-chip" type="button" onclick="setPrompt('Give me a step-by-step breakdown of this video')">
-                <span class="chip-icon">📋</span> Step-by-Step
-              </button>
-              <button class="suggestion-chip" type="button" onclick="setPrompt('What code snippets or tools were shown in this video?')">
-                <span class="chip-icon">💻</span> Code & Tools
-              </button>
+        <div class="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 px-2.5 py-1 rounded-full select-none">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          Online
+        </div>
+      </header>
+
+      <!-- MESSAGES CONTAINER -->
+      <div id="messages" class="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-4">
+        <!-- Initial Welcome Message -->
+        <div class="flex items-start gap-3">
+          <div class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 border border-blue-200/60 dark:border-blue-900/60">
+            ✦
+          </div>
+          <div class="flex-1 bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl rounded-tl-sm p-4 shadow-xs">
+            <div class="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 tracking-wide">
+              YouTube RAG Assistant
             </div>
-
-            <div class="input-wrap" id="inputWrap">
-              <div class="input-prefix" title="Ask AI">
-                <span class="sparkle-dot">✦</span>
-              </div>
-
-              <textarea
-                class="textarea"
-                id="question"
-                rows="1"
-                placeholder="Ask anything about this video... (or press Enter)"></textarea>
-
-              <button class="send-btn" id="sendButton" onclick="sendQuestion()" title="Send question (Enter)" aria-label="Send question">
-                <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-              </button>
+            <div class="assistant-markdown text-sm">
+              <p>Welcome! Please paste any YouTube URL above and click <strong>Process</strong> to index the video transcript and begin chatting.</p>
             </div>
+          </div>
+        </div>
+      </div>
 
-            
+      <!-- CHAT FOOTER & COMPOSER -->
+      <footer class="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-950/30 shrink-0 flex flex-col gap-2.5">
+        
+        <!-- PROMPT SUGGESTIONS -->
+        <div id="composerSuggestions" class="flex items-center gap-2 overflow-x-auto pb-1">
+          <button
+            type="button"
+            class="suggestion-chip shrink-0 text-xs font-medium px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-blue-300 dark:hover:border-blue-600 transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
+            onclick="setPrompt('Summarize this video in detail with key timestamps')">
+            <span>✨</span> Summarize Video
+          </button>
+          <button
+            type="button"
+            class="suggestion-chip shrink-0 text-xs font-medium px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-blue-300 dark:hover:border-blue-600 transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
+            onclick="setPrompt('What are the key takeaways and main concepts?')">
+            <span>💡</span> Key Takeaways
+          </button>
+          <button
+            type="button"
+            class="suggestion-chip shrink-0 text-xs font-medium px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-blue-300 dark:hover:border-blue-600 transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
+            onclick="setPrompt('Give me a step-by-step breakdown of this video')">
+            <span>📋</span> Step-by-Step
+          </button>
+          <button
+            type="button"
+            class="suggestion-chip shrink-0 text-xs font-medium px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-blue-300 dark:hover:border-blue-600 transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
+            onclick="setPrompt('What code snippets or tools were shown in this video?')">
+            <span>💻</span> Code & Tools
+          </button>
+        </div>
 
-          
-        </footer>
+        <!-- INPUT WRAPPER -->
+        <div id="inputWrap" class="relative flex items-center rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus-within:ring-2 focus-within:ring-blue-500/50 focus-within:border-blue-500 shadow-xs transition-all overflow-hidden">
+          <div class="pl-3.5 pr-1 text-blue-500 select-none text-sm font-bold" title="Ask AI">
+            ✦
+          </div>
 
-      </section>
-    </main>
-  </div>
+          <textarea
+            id="question"
+            rows="1"
+            placeholder="Ask anything about this video... (or press Enter)"
+            class="flex-1 py-3 px-2 bg-transparent text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 resize-none focus:outline-none max-h-32 min-h-[44px]"></textarea>
 
+          <button
+            id="sendButton"
+            onclick="sendQuestion()"
+            title="Send question (Enter)"
+            aria-label="Send question"
+            class="mr-2 p-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition-all disabled:opacity-40 disabled:hover:bg-blue-600 disabled:cursor-not-allowed cursor-pointer shadow-xs shrink-0 flex items-center justify-center">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+
+      </footer>
+    </section>
+
+  </main>
+
+  <!-- FLOATING TOAST -->
   <div class="toast" id="toast"></div>
 
-  <script src="/js/script.js?v=30"></script>
+  <script src="/js/script.js?v=40"></script>
 </body>
 
 </html>

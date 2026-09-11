@@ -4,11 +4,11 @@
   <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini" />
   <img src="https://img.shields.io/badge/ChromaDB-FF6F00?style=for-the-badge&logo=databricks&logoColor=white" alt="ChromaDB" />
-  <img src="https://img.shields.io/badge/Vanilla_CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS v4" />
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" />
 </p>
 
-An enterprise-grade, real-time **Retrieval-Augmented Generation (RAG) assistant for YouTube videos**. Powered by **FastAPI**, **Google Gemini**, and **ChromaDB**, with a modern glassmorphic web interface featuring interactive chapter navigation, click-to-seek timestamp citations, and an Obsidian Dark/Light theme.
+An enterprise-grade, real-time **Retrieval-Augmented Generation (RAG) assistant for YouTube videos**. Powered by **FastAPI**, **Google Gemini**, **ChromaDB**, and styled with **Tailwind CSS v4**, featuring an interactive embedded player, chapter navigation, click-to-seek timestamp citations, and an Obsidian Dark/Light theme.
 
 ---
 
@@ -47,7 +47,7 @@ flowchart TD
 
     subgraph Frontend ["3. Interactive Web Application"]
         J -->|Token Stream| K[FastAPI /ask SSE Stream]
-        K --> L[Glassmorphic UI\nVanilla JS + HTML5]
+        K --> L[Modern Web UI\nTailwind CSS v4 + Vanilla JS]
         L --> M[Interactive YouTube Player\nClickable Timestamps]
         L --> N[Chapters Outline Widget]
         L --> O[Obsidian Dark / Light Mode]
